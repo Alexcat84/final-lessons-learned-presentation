@@ -156,7 +156,7 @@ const smartAgriNodes = [
         'Oluwatomiwa Osisanya',
         'Eseoghene Atumah'
       ],
-      date: "April 5, 2025",
+      date: "April 8, 2025",
       speakerNotes: "Good morning/afternoon. We're presenting our procurement plan for Smart Agriculture IoT hardware components. Our plan outlines a comprehensive framework to acquire high-quality IoT sensors, controllers, and communication modules that will support data-driven agricultural operations. We'll cover our evaluation method, acceptance system, contractual requirements, and solicitation documents."
     }
   },
