@@ -351,80 +351,19 @@ function Flow() {
   const reactFlowInstance = useReactFlow();
   const reactFlowWrapper = useRef(null);
   
-  // Ajustar el zoom basado en el tamaño de la ventana
-  useEffect(() => {
-    const calculateOptimalZoom = () => {
-      // Obtener el ancho de la ventana
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      
-      // Calcular un zoom adaptativo basado en el tamaño de pantalla
-      // Los valores son aproximados y pueden ajustarse
-      let newZoom = 0.18; // valor por defecto
-      
-      if (windowWidth < 768) {
-        // Pantallas pequeñas
-        newZoom = 0.12;
-      } else if (windowWidth >= 768 && windowWidth < 1200) {
-        // Pantallas medianas
-        newZoom = 0.15;
-      } else if (windowWidth >= 1200 && windowWidth < 1600) {
-        // Pantallas grandes
-        newZoom = 0.18;
-      } else {
-        // Pantallas muy grandes
-        newZoom = 0.22;
-      }
-      
-      // Ajustar también basado en la altura
-      if (windowHeight < 800) {
-        newZoom = Math.min(newZoom, 0.14);
-      }
-      
-      // Aplicar el nuevo nivel de zoom
-      setZoomLevel(newZoom);
-      if (reactFlowInstance) {
-        reactFlowInstance.setZoom(newZoom);
-      }
-    };
-    
-    // Calcular el zoom inicial
-    calculateOptimalZoom();
-    
-    // Añadir listener para recalcular cuando cambie el tamaño de la ventana
-    window.addEventListener('resize', calculateOptimalZoom);
-    
-    return () => {
-      window.removeEventListener('resize', calculateOptimalZoom);
-    };
-  }, [reactFlowInstance]);
-  
-  // Control de zoom
-  const handleZoomChange = (newZoomLevel) => {
-    setZoomLevel(newZoomLevel);
-    reactFlowInstance.setZoom(newZoomLevel);
-  };
-  
   // Función para centrar nodos con offset adaptativo
   const centerNode = useCallback((nodeId) => {
-    const nodePosition = fixedPositions[nodeId];
-    
-    if (nodePosition && reactFlowInstance) {
-      // Ajustar los offsets basados en el tamaño de pantalla
-      const windowWidth = window.innerWidth;
-      let xOffset = 325;
-      let yOffset = 225;
-      
-      // Ajustar los offsets para diferentes tamaños de pantalla
-      if (windowWidth < 768) {
-        xOffset = 300;
-        yOffset = 200;
-      } else if (windowWidth >= 1600) {
-        xOffset = 350;
-        yOffset = 250;
+    if (reactFlowInstance) {
+      try {
+        // Usar fitView con padding más pequeño para llenar mejor la pantalla
+        reactFlowInstance.fitView({
+          nodes: [{ id: nodeId }],
+          padding: 0.02, // Reducido de 0.1 para un zoom más cerrado
+          duration: 800
+        });
+      } catch (error) {
+        console.warn('Error al centrar el nodo:', error);
       }
-      
-      reactFlowInstance.setCenter(nodePosition.x + xOffset, nodePosition.y + yOffset, { duration: 800 });
     }
   }, [reactFlowInstance]);
   
@@ -444,9 +383,11 @@ function Flow() {
         })
       );
       
-      // Navegar al siguiente nodo
-      const nextNodeId = navigationSequence[nextIndex];
-      centerNode(nextNodeId);
+      // Espera un poco para permitir que se renderice el nodo antes de hacer zoom hacia él
+      setTimeout(() => {
+        const nextNodeId = navigationSequence[nextIndex];
+        centerNode(nextNodeId);
+      }, 100);
     }
   }, [currentNodeIndex, navigationSequence, setNodes, centerNode]);
   
@@ -487,13 +428,26 @@ function Flow() {
       const firstNodeId = navigationSequence[0];
       
       // Esperar a que reactFlowInstance esté disponible
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         if (reactFlowInstance) {
-          centerNode(firstNodeId);
+          try {
+            // Usar fitView con padding más pequeño para el nodo inicial
+            reactFlowInstance.fitView({
+              nodes: [{ id: firstNodeId }],
+              padding: 0.02, // Reducido para un zoom más cerrado
+              duration: 0 // Sin animación en la carga inicial
+            });
+          } catch (error) {
+            console.warn('Error al centrar el nodo inicial:', error);
+          }
         }
-      }, 100);
+      }, 500); // Aumentar el tiempo de espera a 500ms
+      
+      return () => {
+        clearTimeout(timer);
+      };
     }
-  }, [reactFlowInstance, navigationSequence, setNodes, centerNode]);
+  }, [reactFlowInstance, navigationSequence, setNodes]);
   
   // Manejar eventos de teclado
   useEffect(() => {
@@ -513,6 +467,78 @@ function Flow() {
     };
   }, [navigateToNextNode, navigateToPreviousNode]);
   
+  // Ajustar el zoom basado en el tamaño de la ventana
+  useEffect(() => {
+    // Necesitamos asegurarnos que reactFlowInstance esté completamente inicializado
+    if (!reactFlowInstance) {
+      return; // Salir si la instancia aún no está disponible
+    }
+    
+    const calculateOptimalZoom = () => {
+      // Obtener el ancho de la ventana
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      
+      // Calcular un zoom adaptativo basado en el tamaño de pantalla y altura de las diapositivas
+      // Las diapositivas tienen 450px de altura, así que calculamos el zoom para que encajen perfectamente
+      const slideHeight = 450; // altura de las diapositivas
+      const verticalMargin = 20; // margen total reducido (era 40)
+      let newZoom = (windowHeight - verticalMargin) / slideHeight;
+      
+      // Aumentar ligeramente el zoom para cubrir mejor la pantalla
+      newZoom = newZoom * 1.1; // Factor de amplificación para que se vea más grande
+      
+      // Limitar el zoom a valores razonables
+      newZoom = Math.max(0.1, Math.min(newZoom, 1.8));
+      
+      // Factores de corrección según el tamaño de la pantalla
+      if (windowWidth < 768) {
+        newZoom = newZoom * 0.85; // Reducir un poco en pantallas pequeñas
+      } else if (windowWidth >= 1600) {
+        newZoom = newZoom * 0.95; // Reducir un poco en pantallas muy grandes
+      }
+      
+      // Aplicar el nuevo nivel de zoom
+      setZoomLevel(newZoom);
+      
+      // Verificar que reactFlowInstance esté disponible y tenga el método setZoom
+      if (reactFlowInstance && typeof reactFlowInstance.setZoom === 'function') {
+        try {
+          reactFlowInstance.setZoom(newZoom);
+        } catch (error) {
+          console.warn('Error al establecer el zoom:', error);
+        }
+      }
+      
+      // Retornar el zoom calculado para poder usarlo en otras funciones
+      return newZoom;
+    };
+    
+    // Añadir un tiempo de espera para asegurar que ReactFlow esté inicializado
+    const initTimer = setTimeout(() => {
+      if (reactFlowInstance && typeof reactFlowInstance.setZoom === 'function') {
+        calculateOptimalZoom();
+        
+        // Añadir listener para recalcular cuando cambie el tamaño de la ventana
+        window.addEventListener('resize', calculateOptimalZoom);
+      }
+    }, 500); // Aumentar el tiempo de espera a 500ms
+    
+    return () => {
+      clearTimeout(initTimer);
+      window.removeEventListener('resize', calculateOptimalZoom);
+    };
+  }, [reactFlowInstance]);
+  
+  // Control de zoom
+  const handleZoomChange = (newZoomLevel) => {
+    setZoomLevel(newZoomLevel);
+    // Verificar que reactFlowInstance esté disponible
+    if (reactFlowInstance && typeof reactFlowInstance.setZoom === 'function') {
+      reactFlowInstance.setZoom(newZoomLevel);
+    }
+  };
+  
   return (
     <div className="w-screen h-screen" ref={reactFlowWrapper}>
       <ReactFlow
@@ -531,7 +557,12 @@ function Flow() {
         proOptions={{ hideAttribution: true }}
         defaultZoom={zoomLevel}
         style={{ width: '100%', height: '100%' }}
-        fitView={true}
+        fitView={false}
+        nodesDraggable={false}
+        zoomOnScroll={!fixedZoom}
+        panOnScroll={true}
+        zoomOnPinch={!fixedZoom}
+        zoomOnDoubleClick={!fixedZoom}
       >
         <Background variant="dots" gap={16} color="#aaa" />
         <Controls showInteractive={false} />
