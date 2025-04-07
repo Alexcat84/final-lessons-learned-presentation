@@ -344,7 +344,7 @@ function Flow() {
   
   // Estado para el nodo actual y zoom
   const [currentNodeIndex, setCurrentNodeIndex] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(0.25);
+  const [zoomLevel, setZoomLevel] = useState(0.18);
   const [fixedZoom, setFixedZoom] = useState(true);
   
   // Referencia para el componente ReactFlow
