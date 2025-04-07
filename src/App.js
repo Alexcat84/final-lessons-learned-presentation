@@ -351,11 +351,82 @@ function Flow() {
   const reactFlowInstance = useReactFlow();
   const reactFlowWrapper = useRef(null);
   
+  // Ajustar el zoom basado en el tamaño de la ventana
+  useEffect(() => {
+    const calculateOptimalZoom = () => {
+      // Obtener el ancho de la ventana
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      
+      // Calcular un zoom adaptativo basado en el tamaño de pantalla
+      // Los valores son aproximados y pueden ajustarse
+      let newZoom = 0.18; // valor por defecto
+      
+      if (windowWidth < 768) {
+        // Pantallas pequeñas
+        newZoom = 0.12;
+      } else if (windowWidth >= 768 && windowWidth < 1200) {
+        // Pantallas medianas
+        newZoom = 0.15;
+      } else if (windowWidth >= 1200 && windowWidth < 1600) {
+        // Pantallas grandes
+        newZoom = 0.18;
+      } else {
+        // Pantallas muy grandes
+        newZoom = 0.22;
+      }
+      
+      // Ajustar también basado en la altura
+      if (windowHeight < 800) {
+        newZoom = Math.min(newZoom, 0.14);
+      }
+      
+      // Aplicar el nuevo nivel de zoom
+      setZoomLevel(newZoom);
+      if (reactFlowInstance) {
+        reactFlowInstance.setZoom(newZoom);
+      }
+    };
+    
+    // Calcular el zoom inicial
+    calculateOptimalZoom();
+    
+    // Añadir listener para recalcular cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', calculateOptimalZoom);
+    
+    return () => {
+      window.removeEventListener('resize', calculateOptimalZoom);
+    };
+  }, [reactFlowInstance]);
+  
   // Control de zoom
   const handleZoomChange = (newZoomLevel) => {
     setZoomLevel(newZoomLevel);
     reactFlowInstance.setZoom(newZoomLevel);
   };
+  
+  // Función para centrar nodos con offset adaptativo
+  const centerNode = useCallback((nodeId) => {
+    const nodePosition = fixedPositions[nodeId];
+    
+    if (nodePosition && reactFlowInstance) {
+      // Ajustar los offsets basados en el tamaño de pantalla
+      const windowWidth = window.innerWidth;
+      let xOffset = 325;
+      let yOffset = 225;
+      
+      // Ajustar los offsets para diferentes tamaños de pantalla
+      if (windowWidth < 768) {
+        xOffset = 300;
+        yOffset = 200;
+      } else if (windowWidth >= 1600) {
+        xOffset = 350;
+        yOffset = 250;
+      }
+      
+      reactFlowInstance.setCenter(nodePosition.x + xOffset, nodePosition.y + yOffset, { duration: 800 });
+    }
+  }, [reactFlowInstance]);
   
   // Navegar al siguiente nodo
   const navigateToNextNode = useCallback(() => {
@@ -375,13 +446,9 @@ function Flow() {
       
       // Navegar al siguiente nodo
       const nextNodeId = navigationSequence[nextIndex];
-      const nodePosition = fixedPositions[nextNodeId];
-      
-      if (nodePosition) {
-        reactFlowInstance.setCenter(nodePosition.x + 325, nodePosition.y + 225, { duration: 800 });
-      }
+      centerNode(nextNodeId);
     }
-  }, [currentNodeIndex, navigationSequence, reactFlowInstance, setNodes]);
+  }, [currentNodeIndex, navigationSequence, setNodes, centerNode]);
   
   // Navegar al nodo anterior
   const navigateToPreviousNode = useCallback(() => {
@@ -391,13 +458,9 @@ function Flow() {
       
       // Navegar al nodo anterior
       const prevNodeId = navigationSequence[prevIndex];
-      const nodePosition = fixedPositions[prevNodeId];
-      
-      if (nodePosition) {
-        reactFlowInstance.setCenter(nodePosition.x + 325, nodePosition.y + 225, { duration: 800 });
-      }
+      centerNode(prevNodeId);
     }
-  }, [currentNodeIndex, navigationSequence, reactFlowInstance]);
+  }, [currentNodeIndex, navigationSequence, centerNode]);
   
   // Manejar conexiones entre nodos
   const onConnect = useCallback(
@@ -420,18 +483,17 @@ function Flow() {
     );
     
     // Centrar en el primer nodo
-    if (reactFlowInstance && navigationSequence.length > 0) {
+    if (navigationSequence.length > 0) {
       const firstNodeId = navigationSequence[0];
-      const nodePosition = fixedPositions[firstNodeId];
       
-      if (nodePosition) {
-        setTimeout(() => {
-          reactFlowInstance.setCenter(nodePosition.x + 325, nodePosition.y + 225, { duration: 0 });
-          reactFlowInstance.setZoom(zoomLevel);
-        }, 50);
-      }
+      // Esperar a que reactFlowInstance esté disponible
+      setTimeout(() => {
+        if (reactFlowInstance) {
+          centerNode(firstNodeId);
+        }
+      }, 100);
     }
-  }, [reactFlowInstance, navigationSequence, setNodes, zoomLevel]);
+  }, [reactFlowInstance, navigationSequence, setNodes, centerNode]);
   
   // Manejar eventos de teclado
   useEffect(() => {
