@@ -11,7 +11,6 @@
   from = "/*"
   to = "/index.html"
   status = 200
-  force = true
 
 # Asegurar que los archivos estáticos tienen políticas de caché adecuadas
 [[headers]]
