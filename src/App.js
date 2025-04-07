@@ -344,7 +344,7 @@ function Flow() {
   
   // Estado para el nodo actual y zoom
   const [currentNodeIndex, setCurrentNodeIndex] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(0.15);
+  const [zoomLevel, setZoomLevel] = useState(0.18);
   const [fixedZoom, setFixedZoom] = useState(true);
   
   // Referencia para el componente ReactFlow
@@ -378,7 +378,7 @@ function Flow() {
       const nodePosition = fixedPositions[nextNodeId];
       
       if (nodePosition) {
-        reactFlowInstance.setCenter(nodePosition.x + 325, nodePosition.y + 250, { duration: 800 });
+        reactFlowInstance.setCenter(nodePosition.x + 325, nodePosition.y + 225, { duration: 800 });
       }
     }
   }, [currentNodeIndex, navigationSequence, reactFlowInstance, setNodes]);
@@ -394,7 +394,7 @@ function Flow() {
       const nodePosition = fixedPositions[prevNodeId];
       
       if (nodePosition) {
-        reactFlowInstance.setCenter(nodePosition.x + 325, nodePosition.y + 250, { duration: 800 });
+        reactFlowInstance.setCenter(nodePosition.x + 325, nodePosition.y + 225, { duration: 800 });
       }
     }
   }, [currentNodeIndex, navigationSequence, reactFlowInstance]);
@@ -426,7 +426,7 @@ function Flow() {
       
       if (nodePosition) {
         setTimeout(() => {
-          reactFlowInstance.setCenter(nodePosition.x + 325, nodePosition.y + 250, { duration: 0 });
+          reactFlowInstance.setCenter(nodePosition.x + 325, nodePosition.y + 225, { duration: 0 });
           reactFlowInstance.setZoom(zoomLevel);
         }, 50);
       }
