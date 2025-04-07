@@ -1,8 +1,25 @@
 [build]
   command = "npm run build"
   publish = "build"
+  
+[build.environment]
+  NODE_VERSION = "18.x"
+  CI = "false"
 
+# Redireccionamiento para SPA (aplicación de página única)
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200 
+  status = 200
+  force = true
+
+# Asegurar que los archivos estáticos tienen políticas de caché adecuadas
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate" 
