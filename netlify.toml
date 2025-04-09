@@ -1,9 +1,9 @@
 [build]
-  command = "CI= npm run build && node fix-build.js"
+  command = "npm run build"
   publish = "build"
   
 [build.environment]
-  NODE_VERSION = "16.20.0"
+  NODE_VERSION = "18"
 
 # Handle Single Page Application routing
 [[redirects]]

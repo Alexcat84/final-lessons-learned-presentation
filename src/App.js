@@ -29,16 +29,73 @@ const fadeInAnimation = `
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out forwards;
   }
+  
+  /* Custom background animations */
+  @keyframes gradientFlow {
+    0% { background-position: 0% 50% }
+    50% { background-position: 100% 50% }
+    100% { background-position: 0% 50% }
+  }
+  
+  /* Pulse animation for icons */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s ease-in-out infinite;
+  }
+  
+  /* Node transition animations */
+  @keyframes scaleIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  @keyframes scaleOut {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0; }
+  }
+  
+  @keyframes slideInUp {
+    0% { transform: translateY(50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  
+  @keyframes glowPulse {
+    0% { box-shadow: 0 0 5px 0px rgba(59, 130, 246, 0.5); }
+    50% { box-shadow: 0 0 20px 5px rgba(59, 130, 246, 0.7); }
+    100% { box-shadow: 0 0 5px 0px rgba(59, 130, 246, 0.5); }
+  }
+  
+  .node-entering {
+    animation: scaleIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  
+  .node-exiting {
+    animation: scaleOut 0.5s ease-in forwards;
+  }
+  
+  .slide-in-up {
+    animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  .glow-pulse {
+    animation: glowPulse 3s infinite;
+  }
 `;
 
-// Crypto Currency Impacts nodes
-import CryptoTitleNode from './nodes/CryptoTitleNode';
-import CryptoOverviewNode from './nodes/CryptoOverviewNode';
-import CryptoEconomicNode from './nodes/CryptoEconomicNode';
-import CryptoRegulatoryNode from './nodes/CryptoRegulatoryNode';
-import CryptoSocialNode from './nodes/CryptoSocialNode';
-import CryptoConclusionNode from './nodes/CryptoConclusionNode';
-import CryptoObjectivesNode from './nodes/CryptoObjectivesNode';
+// Lessons Learned Nodes
+import LessonsTitleNode from './nodes/LessonsTitleNode';
+import ProjectOverviewNode from './nodes/ProjectOverviewNode';
+import AccomplishmentsNode from './nodes/AccomplishmentsNode';
+import MarketingImpactNode from './nodes/MarketingImpactNode';
+import DonationsEvolutionNode from './nodes/DonationsEvolutionNode';
+import ProjectExecutionNode from './nodes/ProjectExecutionNode';
+import LessonsLearnedNode from './nodes/LessonsLearnedNode';
+import ThankYouNode from './nodes/ThankYouNode';
 
 // Definición del componente NavigationControls
 function NavigationControls({ onNext, onPrevious, currentNodeIndex, totalNodes }) {
@@ -46,24 +103,24 @@ function NavigationControls({ onNext, onPrevious, currentNodeIndex, totalNodes }
   
   return (
     <div 
-      className={`fixed bottom-4 right-4 z-50 flex gap-2 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-30'}`}
+      className={`fixed bottom-6 right-6 z-50 flex gap-3 transition-all duration-300 ${isHovered ? 'opacity-100 transform scale-105' : 'opacity-60'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {currentNodeIndex > 0 && (
         <button
           onClick={onPrevious}
-          className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded shadow-lg transition-colors text-xs"
+          className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 border border-blue-400/20"
         >
-          ← Previous
+          ← Anterior
         </button>
       )}
       {currentNodeIndex < totalNodes - 1 && (
         <button
           onClick={onNext}
-          className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded shadow-lg transition-colors text-xs"
+          className="bg-gradient-to-r from-indigo-600 to-blue-700 hover:from-indigo-700 hover:to-blue-800 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 border border-blue-400/20"
         >
-          Next →
+          Siguiente →
         </button>
       )}
     </div>
@@ -89,255 +146,215 @@ function ZoomControl({ zoomLevel, onChange, disabled }) {
 
 // Registramos los tipos de nodos personalizados
 const nodeTypes = {
-  // Crypto Currency Impacts node types
-  cryptoTitleNode: CryptoTitleNode,
-  cryptoOverviewNode: CryptoOverviewNode,
-  cryptoEconomicNode: CryptoEconomicNode,
-  cryptoRegulatoryNode: CryptoRegulatoryNode,
-  cryptoSocialNode: CryptoSocialNode,
-  cryptoConclusionNode: CryptoConclusionNode,
-  cryptoObjectivesNode: CryptoObjectivesNode
+  // Lessons Learned node types
+  lessonsTitleNode: LessonsTitleNode,
+  projectOverviewNode: ProjectOverviewNode,
+  accomplishmentsNode: AccomplishmentsNode,
+  marketingImpactNode: MarketingImpactNode,
+  donationsEvolutionNode: DonationsEvolutionNode,
+  projectExecutionNode: ProjectExecutionNode,
+  lessonsLearnedNode: LessonsLearnedNode,
+  thankYou: ThankYouNode
 };
-
-// Active presentation key
-const activePresentationKey = 'crypto';
 
 // Navigation sequences
-const navigationSequences = {
-  crypto: [
-    'cryptoTitle',
-    'cryptoTransformation',
-    'cryptoBusiness',
-    'cryptoRiskIdentification',
-    'cryptoStrategicResponse',
-    'cryptoAdaptation',
-    'cryptoThanks'
-  ]
-};
-
-// Define the active navigation sequence
-const navigationSequence = navigationSequences[activePresentationKey];
+const navigationSequence = [
+  'lessonsTitle',
+  'projectOverview',
+  'accomplishments',
+  'marketingImpact',
+  'donationsEvolution',
+  'projectExecution',
+  'lessonsLearned',
+  'thanksSlide'
+];
 
 // Definimos las posiciones fijas en zigzag
 const fixedPositions = {  
-  // Crypto Currency positions
-  'cryptoTitle': { x: 0, y: 0 },
-  'cryptoTransformation': { x: -1000, y: 700 },
-  'cryptoBusiness': { x: 1000, y: 1400 },
-  'cryptoRiskIdentification': { x: -1000, y: 2100 },
-  'cryptoStrategicResponse': { x: 1000, y: 2800 },
-  'cryptoAdaptation': { x: -1000, y: 3500 },
-  'cryptoThanks': { x: 0, y: 4200 }
+  // Lessons Learned positions
+  'lessonsTitle': { x: 0, y: 0 },
+  'projectOverview': { x: -1000, y: 700 },
+  'accomplishments': { x: 1000, y: 1400 },
+  'marketingImpact': { x: -1000, y: 2100 },
+  'donationsEvolution': { x: 1000, y: 2800 },
+  'projectExecution': { x: -1000, y: 3500 },
+  'lessonsLearned': { x: 0, y: 4200 },
+  'thanksSlide': { x: 0, y: 5000 }
 };
 
 // Guardar las posiciones fijas en localStorage
 localStorage.setItem('nodePositions', JSON.stringify(fixedPositions));
 
-// Crypto Currency nodes
-const cryptoNodes = [
+// Lessons Learned nodes
+const lessonsNodes = [
   {
-    id: 'cryptoTitle',
-    type: 'cryptoTitleNode',
-    position: fixedPositions['cryptoTitle'],
+    id: 'lessonsTitle',
+    type: 'lessonsTitleNode',
+    position: fixedPositions['lessonsTitle'],
     data: {
-      title: "Crypto Currency Impacts on Traditional Financial Markets and World Businesses",
-      courseCode: "25W_MGT4202_300 Project Risk Management",
-      professor: "Professor's Name: Pete Grieve",
+      title: "Sing for Wishes: Karaoke Fundraiser for Make-A-Wish Canada",
+      subtitle: "Team Symphony - Lessons Learned Presentation",
+      courseCode: "25W_MGT4209_300 Applied Project Management",
+      professor: "Professor: David Salomon",
       teamMembers: [
-        'Alexis García',
-        'Joseph Alabi',
-        'Christabel Ebue',
-        'Oluwatomiwa Osisanya',
-        'Eseoghene Atumah'
+        'Team Symphony'
       ],
-      date: "April 8, 2025",
-      speakerNotes: "Welcome to our analysis of cryptocurrency impacts on traditional financial markets and world businesses. In this presentation, we'll explore how cryptocurrencies are transforming financial infrastructure and presenting both challenges and opportunities across various sectors."
+      date: "April 9, 2025",
+      speakerNotes: "Welcome to our Lessons Learned presentation for the Sing for Wishes Karaoke fundraiser project benefiting Make-A-Wish Canada. We'll share our journey, accomplishments, challenges, and key insights gained through this project."
     }
   },
   {
-    id: 'cryptoTransformation',
-    type: 'cryptoEconomicNode',
-    position: fixedPositions['cryptoTransformation'],
+    id: 'projectOverview',
+    type: 'projectOverviewNode',
+    position: fixedPositions['projectOverview'],
     data: {
-      title: "Transformative Impact on Financial Infrastructure",
-      riskConcept: "Systemic disruption of traditional financial markets",
-      realWorldExample: "Western Union faced a 30% decline in stock value between 2018-2022 as cryptocurrencies captured the international remittance market with 70% lower fees and settlement times reduced from days to minutes.",
-      impacts: [
-        { category: "Traditional banks", value: 85, description: "$17B in annual revenue at risk" },
-        { category: "Central bank response", value: 90, description: "114 CBDC projects launched as a defensive response" }
+      title: "Project Overview",
+      overviewPoints: [
+        { label: 'Campaign goal', value: 'Raise funds for Make-A-Wish Canada through a karaoke event' },
+        { label: 'Initial fundraising target', value: '$1,000' },
+        { label: 'Event location', value: 'Sonny Bar & Grill, Ottawa' },
+        { label: 'Original event date', value: 'March 28, 2025' },
+        { label: 'Rescheduled date', value: 'April 1, 2025 (due to severe weather)' }
       ],
-      speakerNotes: "Cryptocurrencies are fundamentally disrupting traditional financial infrastructure. As our real-world example shows, established players like Western Union have suffered significant value decline as crypto alternatives offer dramatically lower fees and faster settlement times. Traditional banks have identified billions in revenue at risk, prompting central banks worldwide to launch their own digital currency projects as a defensive measure."
+      speakerNotes: "Our project centered around organizing a karaoke fundraising event for Make-A-Wish Canada. We initially set a fundraising target of $1,000 and ultimately exceeded it by raising $1,213.20. The event was originally scheduled for March 28 at Sonny Bar & Grill in Ottawa, but due to severe weather conditions, we had to implement our contingency plan and reschedule for April 1."
     },
     hidden: true
   },
   {
-    id: 'cryptoBusiness',
-    type: 'cryptoEconomicNode',
-    position: fixedPositions['cryptoBusiness'],
+    id: 'accomplishments',
+    type: 'accomplishmentsNode',
+    position: fixedPositions['accomplishments'],
     data: {
-      title: "Business Transformation Across Sectors",
-      riskConcept: "Extreme crypto market volatility impacting traditional business operations",
-      realWorldExample: "Official Trump (TRUMP) token reached $75.35 on January 19, 2025, crashed to $1.21 on January 17 (89.47% drop in 2 days), before partially recovering to $7.92.",
-      impacts: [
-        { category: "PayPal", value: 75, description: "49% increase in engagement after crypto integration (2020)" },
-        { category: "Tesla", value: 85, description: "$1.5B in unrealized gains/losses from Bitcoin investment" },
-        { category: "BlackRock", value: 90, description: "Bitcoin ETF accumulated $17.7B within months of launch (2024)" }
+      title: "Project Accomplishments",
+      accomplishments: [
+        'Exceeded fundraising goal by over 20%',
+        'Successfully implemented bilingual (English/French) marketing videos',
+        'Developed and executed a 3-week social media campaign',
+        'Arranged donation collection points at multiple locations:',
+        ['Connor & Kennedy\'s No Frills ($690.85)', 'Sonny Bar & Grill ($174.00)', 'Online platform ($465.00)'],
+        'Successfully rescheduled event during ice storm emergency (Risk Assessment)'
       ],
-      speakerNotes: "The extreme volatility of cryptocurrency markets presents both opportunities and challenges for businesses. As illustrated by the TRUMP token's dramatic price swings, crypto assets can experience severe volatility in very short timeframes. Despite these risks, major corporations continue to integrate cryptocurrencies into their operations and investment strategies, as demonstrated by PayPal's engagement increase, Tesla's significant Bitcoin holdings, and BlackRock's highly successful Bitcoin ETF launch."
+      speakerNotes: "We're proud of several key accomplishments in this project. We exceeded our fundraising goal by over 20%, created bilingual marketing videos to reach a broader audience, executed an effective social media campaign, established multiple donation collection points, and successfully navigated through an unexpected weather emergency by implementing our risk response plan."
     },
     hidden: true
   },
   {
-    id: 'cryptoRiskIdentification',
-    type: 'cryptoRegulatoryNode',
-    position: fixedPositions['cryptoRiskIdentification'],
+    id: 'marketingImpact',
+    type: 'marketingImpactNode',
+    position: fixedPositions['marketingImpact'],
     data: {
-      title: "Risk Identification in Crypto Market Integration",
-      riskConcept: "Failures in early identification of crypto risk signals",
-      realWorldExample: "Silvergate Bank and Signature Bank collapsed in 2023 by failing to properly identify their concentration risk in crypto deposits, while Fidelity detected early signals and established Fidelity Digital Assets in 2017, capturing market share.",
-      outcomes: [
-        {
-          name: "Failed Banks",
-          status: "Total Loss",
-          details: "Complete loss of shareholder value",
-          color: "from-red-400 to-red-500"
+      title: "Marketing Campaign Impact",
+      speakerNotes: "Our marketing campaign was a critical success factor. We implemented a multi-platform strategy with bilingual content that significantly increased community engagement. The 3-week campaign generated a 421% increase in engagement across all platforms, demonstrating the effectiveness of our approach."
+    },
+    hidden: true
+  },
+  {
+    id: 'donationsEvolution',
+    type: 'donationsEvolutionNode',
+    position: fixedPositions['donationsEvolution'],
+    data: {
+      title: "Donations Evolution",
+      speakerNotes: "This slide illustrates how donations evolved throughout our campaign. Connor & Kennedy's No Frills was our largest collection point, contributing nearly 43% of total funds. Our online platform generated about 29%, while the event venue provided almost 11%. This diversified approach was key to exceeding our goal and reaching $1,213.20."
+    },
+    hidden: true
+  },
+  {
+    id: 'projectExecution',
+    type: 'projectExecutionNode',
+    position: fixedPositions['projectExecution'],
+    data: {
+      title: "Project Execution",
+      description: "Fundraising Event and Contingency Plan Execution",
+      speakerNotes: "These images and video capture key moments of our karaoke fundraising event. Despite the weather challenges that forced us to reschedule, our contingency planning ensured the event was ultimately a success. The venue's cooperation and our team's flexibility were essential to overcoming these unexpected obstacles."
+    },
+    hidden: true
+  },
+  {
+    id: 'lessonsLearned',
+    type: 'lessonsLearnedNode',
+    position: fixedPositions['lessonsLearned'],
+    data: {
+      title: "Personal Lessons Learned",
+      lessons: [
+        { 
+          title: 'Weather Risk Planning', 
+          description: 'Winter events require specific contingency plans',
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+            </svg>
+          )
         },
-        {
-          name: "Early Detection",
-          status: "22% ROI",
-          details: "Average return on investment for new business lines",
-          color: "from-green-400 to-green-500"
+        { 
+          title: 'Multi-Channel Marketing', 
+          description: 'Combining online and in-person approaches yields best results',
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+          )
+        },
+        { 
+          title: 'Community Support', 
+          description: 'Ottawa residents showed exceptional generosity for noble causes',
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          )
+        },
+        { 
+          title: 'Stakeholder Coordination', 
+          description: 'Effective management of all parties was crucial for success',
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          )
+        },
+        { 
+          title: 'Decisive Action', 
+          description: 'Quick response to opportunities directly led to exceeding our goals',
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          )
         }
       ],
-      challenges: [
-        "Identifying concentration risks in crypto deposits",
-        "Recognizing market signals early",
-        "Assessing crypto-related counterparty risks",
-        "Understanding technical infrastructure vulnerabilities",
-        "Establishing appropriate risk metrics"
-      ],
-      speakerNotes: "Early risk identification is critical in the cryptocurrency space. The contrasting outcomes of Silvergate/Signature Banks versus Fidelity demonstrate how proper risk identification can mean the difference between complete failure and market leadership. Banks that failed to identify their concentration risks in crypto deposits suffered catastrophic collapses, while institutions that detected early signals were able to establish specialized divisions and capture significant market share with strong returns on investment."
+      speakerNotes: "This project taught us five crucial lessons: First, winter events need specific contingency plans to address weather risks. Second, multi-channel marketing combining online and offline approaches delivers the best results. Third, we were impressed by the exceptional generosity of Ottawa residents for charitable causes. Fourth, effective stakeholder coordination was vital for navigating challenges. Finally, decisive action in response to both obstacles and opportunities directly contributed to exceeding our fundraising goals."
     },
     hidden: true
   },
   {
-    id: 'cryptoStrategicResponse',
-    type: 'cryptoSocialNode',
-    position: fixedPositions['cryptoStrategicResponse'],
-    data: {
-      title: "Strategic Response Plans for Crypto Risks",
-      riskConcept: "Selection of inadequate response strategies to crypto disruption",
-      example: [
-        {
-          title: "JPMorgan",
-          description: "Initially banned crypto, then launched JPM Coin",
-          outcome: "$300M in new revenue",
-          icon: null
-        },
-        {
-          title: "Credit Suisse",
-          description: "Passive acceptance without defined strategy",
-          outcome: "Loss of market share",
-          icon: null
-        }
-      ],
-      keyLesson: "Proactive strategies generated 3X better results than reactive or passive ones.",
-      speakerNotes: "The strategic response to cryptocurrency disruption varies widely among financial institutions. JPMorgan demonstrates how even initial resistance can evolve into a successful strategy when accompanied by decisive action, while Credit Suisse's passive approach resulted in significant market share loss. Our analysis shows that institutions implementing proactive strategies consistently outperformed those with reactive or passive approaches by a factor of three."
-    },
-    hidden: true
-  },
-  {
-    id: 'cryptoAdaptation',
-    type: 'cryptoRegulatoryNode',
-    position: fixedPositions['cryptoAdaptation'],
-    data: {
-      title: "Adaptation Strategy Assessment",
-      riskConcept: "Inadequate monitoring of changing crypto risk landscape",
-      realWorldExample: "Citigroup implemented quarterly crypto risk assessments that prevented $340M in potential losses during the 2022 crash, while Wells Fargo lost $1.8B in potential revenue due to their late market entry.",
-      transformations: [
-        {
-          name: "Monitoring",
-          status: "Continuous",
-          details: "From periodic to continuous monitoring (24/7)",
-          color: "from-blue-400 to-indigo-500"
-        },
-        {
-          name: "Metrics",
-          status: "Specialized",
-          details: "From standard metrics to specific crypto volatility metrics",
-          color: "from-indigo-400 to-purple-500"
-        },
-        {
-          name: "Systems",
-          status: "Distributed",
-          details: "From centralized to distributed risk systems",
-          color: "from-purple-400 to-pink-500"
-        }
-      ],
-      challenges: [
-        "Adapting to rapidly evolving market conditions",
-        "Developing specialized crypto risk metrics",
-        "Implementing continuous monitoring systems",
-        "Training risk teams on blockchain technology",
-        "Integrating crypto risk into enterprise frameworks"
-      ],
-      speakerNotes: "The effectiveness of risk monitoring strategies significantly impacts an organization's ability to navigate the crypto landscape. Citigroup's implementation of regular crypto risk assessments demonstrates how proper monitoring can prevent substantial losses during market downturns. Conversely, Wells Fargo's insufficient monitoring led to missed opportunities and revenue loss. Successful organizations are transforming their risk approaches from periodic to continuous monitoring, implementing specialized crypto metrics, and shifting from centralized to distributed risk systems."
-    },
-    hidden: true
-  },
-  {
-    id: 'cryptoThanks',
-    type: 'cryptoConclusionNode',
-    position: fixedPositions['cryptoThanks'],
-    data: {
-      title: "Thank you!",
-      conclusions: [
-        "Cryptocurrencies present both systemic risks and opportunities for traditional financial markets",
-        "Early risk identification determines success or failure in crypto market integration",
-        "Proactive strategic responses deliver measurably better outcomes than reactive approaches",
-        "Continuous monitoring with specialized metrics is essential for adapting to crypto risks"
-      ],
-      recommendations: [
-        "Implement continuous crypto risk monitoring systems",
-        "Develop specialized crypto risk metrics and frameworks",
-        "Establish proactive rather than reactive strategies",
-        "Invest in blockchain expertise across risk departments"
-      ],
-      teamMembers: [
-        'Alexis García',
-        'Joseph Alabi',
-        'Christabel Ebue',
-        'Oluwatomiwa Osisanya',
-        'Eseoghene Atumah'
-      ],
-      speakerNotes: "Thank you for your attention to our presentation on cryptocurrency impacts on traditional financial markets and world businesses. We've examined how crypto is transforming financial infrastructure, creating business opportunities across sectors, and requiring new approaches to risk identification, strategic response, and adaptation. We're now happy to answer any questions you may have about our analysis."
+    id: 'thanksSlide',
+    type: 'thankYou',
+    position: fixedPositions['thanksSlide'],
+    data: { 
+      title: "Thank You",
+      subtitle: "For your attention and feedback",
+      teamName: "Team Symphony"
     },
     hidden: true
   }
 ];
 
 // Set initial nodes
-const initialNodes = cryptoNodes;
+const initialNodes = lessonsNodes;
 
-// Create edges for Crypto Currency presentation
-const cryptoEdges = [
-  { id: 'e1-2', source: 'cryptoTitle', target: 'cryptoTransformation', animated: true },
-  { id: 'e2-3', source: 'cryptoTransformation', target: 'cryptoBusiness', animated: true },
-  { id: 'e3-4', source: 'cryptoBusiness', target: 'cryptoRiskIdentification', animated: true },
-  { id: 'e4-5', source: 'cryptoRiskIdentification', target: 'cryptoStrategicResponse', animated: true },
-  { id: 'e5-6', source: 'cryptoStrategicResponse', target: 'cryptoAdaptation', animated: true },
-  { id: 'e6-7', source: 'cryptoAdaptation', target: 'cryptoThanks', animated: true }
+// Create edges for Lessons Learned presentation
+const lessonsEdges = [
+  { id: 'e1-2', source: 'lessonsTitle', target: 'projectOverview', animated: true },
+  { id: 'e2-3', source: 'projectOverview', target: 'accomplishments', animated: true },
+  { id: 'e3-4', source: 'accomplishments', target: 'marketingImpact', animated: true },
+  { id: 'e4-5', source: 'marketingImpact', target: 'donationsEvolution', animated: true },
+  { id: 'e5-6', source: 'donationsEvolution', target: 'projectExecution', animated: true },
+  { id: 'e6-7', source: 'projectExecution', target: 'lessonsLearned', animated: true },
+  { id: 'e7-8', source: 'lessonsLearned', target: 'thanksSlide', animated: true }
 ];
 
 // Set initial edges
-const initialEdges = cryptoEdges;
-
-// Función para cargar las posiciones guardadas (ahora siempre usará las fijas)
-const loadSavedNodePositions = () => {
-  // Retrieve from localStorage or use default positions
-  const savedPositions = fixedPositions;
-  return savedPositions;
-};
+const initialEdges = lessonsEdges;
 
 function Flow() {
   // Estado para los nodos y aristas
@@ -347,21 +364,22 @@ function Flow() {
   // Estado para el nodo actual y zoom
   const [currentNodeIndex, setCurrentNodeIndex] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(0.18);
-  const [fixedZoom, setFixedZoom] = useState(true);
   
   // Referencia para el componente ReactFlow
   const reactFlowInstance = useReactFlow();
   const reactFlowWrapper = useRef(null);
   
-  // Función para centrar nodos con offset adaptativo
+  // Función para centrar nodos con mejor ajuste a la pantalla
   const centerNode = useCallback((nodeId) => {
     if (reactFlowInstance) {
       try {
         // Usar fitView con padding más pequeño para llenar mejor la pantalla
         reactFlowInstance.fitView({
           nodes: [{ id: nodeId }],
-          padding: 0.02, // Reducido de 0.1 para un zoom más cerrado
-          duration: 800
+          padding: 0.05, // Un poco más de margen para evitar que toque los bordes
+          duration: 800,
+          minZoom: 0, // Permitir zoom más pequeño si es necesario
+          maxZoom: 2
         });
       } catch (error) {
         console.warn('Error al centrar el nodo:', error);
@@ -375,17 +393,20 @@ function Flow() {
       const nextIndex = currentNodeIndex + 1;
       setCurrentNodeIndex(nextIndex);
       
-      // Revelar el siguiente nodo
+      // Revelar el siguiente nodo (sin animación de salida)
       setNodes((nds) =>
         nds.map((node) => {
           if (node.id === navigationSequence[nextIndex]) {
-            node.hidden = false;
+            return {
+              ...node,
+              hidden: false
+            };
           }
           return node;
         })
       );
       
-      // Espera un poco para permitir que se renderice el nodo antes de hacer zoom hacia él
+      // Centrar en el siguiente nodo
       setTimeout(() => {
         const nextNodeId = navigationSequence[nextIndex];
         centerNode(nextNodeId);
@@ -443,7 +464,7 @@ function Flow() {
             console.warn('Error al centrar el nodo inicial:', error);
           }
         }
-      }, 500); // Aumentar el tiempo de espera a 500ms
+      }, 500);
       
       return () => {
         clearTimeout(timer);
@@ -471,78 +492,61 @@ function Flow() {
   
   // Ajustar el zoom basado en el tamaño de la ventana
   useEffect(() => {
-    // Necesitamos asegurarnos que reactFlowInstance esté completamente inicializado
     if (!reactFlowInstance) {
       return; // Salir si la instancia aún no está disponible
     }
     
     const calculateOptimalZoom = () => {
-      // Obtener el ancho de la ventana
+      // Obtener dimensiones de la ventana
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       
-      // Calcular un zoom adaptativo basado en el tamaño de pantalla y altura de las diapositivas
-      // Las diapositivas tienen 450px de altura, así que calculamos el zoom para que encajen perfectamente
-      const slideHeight = 450; // altura de las diapositivas
-      const verticalMargin = 20; // margen total reducido (era 40)
-      let newZoom = (windowHeight - verticalMargin) / slideHeight;
+      // Las diapositivas pueden tener diferentes tamaños, usamos el máximo para asegurarnos
+      const slideWidth = 650;
+      const slideHeight = 500; // Aumentado para considerar altura máxima de los nodos
       
-      // Aumentar ligeramente el zoom para cubrir mejor la pantalla
-      newZoom = newZoom * 1.1; // Factor de amplificación para que se vea más grande
+      // Calcular zoom para ajustar altura y ancho con margen extra
+      const zoomForHeight = (windowHeight - 80) / slideHeight; // Más margen vertical
+      const zoomForWidth = (windowWidth - 60) / slideWidth; // Margen horizontal
       
-      // Limitar el zoom a valores razonables
-      newZoom = Math.max(0.1, Math.min(newZoom, 1.8));
+      // Usar el zoom más restrictivo (el menor) para que se vea completo
+      let newZoom = Math.min(zoomForHeight, zoomForWidth);
       
-      // Factores de corrección según el tamaño de la pantalla
-      if (windowWidth < 768) {
-        newZoom = newZoom * 0.85; // Reducir un poco en pantallas pequeñas
-      } else if (windowWidth >= 1600) {
-        newZoom = newZoom * 0.95; // Reducir un poco en pantallas muy grandes
-      }
+      // Limitar el zoom a un rango razonable
+      newZoom = Math.max(0.1, Math.min(newZoom, 1.0));
       
-      // Aplicar el nuevo nivel de zoom
-      setZoomLevel(newZoom);
-      
-      // Verificar que reactFlowInstance esté disponible y tenga el método setZoom
-      if (reactFlowInstance && typeof reactFlowInstance.setZoom === 'function') {
-        try {
-          reactFlowInstance.setZoom(newZoom);
-        } catch (error) {
-          console.warn('Error al establecer el zoom:', error);
-        }
-      }
-      
-      // Retornar el zoom calculado para poder usarlo en otras funciones
       return newZoom;
     };
     
-    // Añadir un tiempo de espera para asegurar que ReactFlow esté inicializado
-    const initTimer = setTimeout(() => {
-      if (reactFlowInstance && typeof reactFlowInstance.setZoom === 'function') {
-        calculateOptimalZoom();
-        
-        // Añadir listener para recalcular cuando cambie el tamaño de la ventana
-        window.addEventListener('resize', calculateOptimalZoom);
-      }
-    }, 500); // Aumentar el tiempo de espera a 500ms
+    // Aplicar zoom calculado
+    const newZoom = calculateOptimalZoom();
+    setZoomLevel(newZoom);
+    
+    // También ajustar cuando cambie el tamaño de la ventana
+    const handleResize = () => {
+      const updatedZoom = calculateOptimalZoom();
+      setZoomLevel(updatedZoom);
+    };
+    
+    window.addEventListener('resize', handleResize);
     
     return () => {
-      clearTimeout(initTimer);
-      window.removeEventListener('resize', calculateOptimalZoom);
+      window.removeEventListener('resize', handleResize);
     };
   }, [reactFlowInstance]);
   
-  // Control de zoom
+  // Aplicar cambios de zoom al ReactFlow
   const handleZoomChange = (newZoomLevel) => {
     setZoomLevel(newZoomLevel);
-    // Verificar que reactFlowInstance esté disponible
-    if (reactFlowInstance && typeof reactFlowInstance.setZoom === 'function') {
+    if (reactFlowInstance) {
       reactFlowInstance.setZoom(newZoomLevel);
     }
   };
   
   return (
-    <div className="w-screen h-screen" ref={reactFlowWrapper}>
+    <div className="w-full h-full" ref={reactFlowWrapper}>
+      <style jsx global>{fadeInAnimation}</style>
+      
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -550,36 +554,21 @@ function Flow() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        proOptions={{ hideAttribution: true }}
         minZoom={0.1}
         maxZoom={2}
-        defaultEdgeOptions={{
-          animated: true,
-          style: { stroke: '#fff', strokeWidth: 2 }
-        }}
-        proOptions={{ hideAttribution: true }}
         defaultZoom={zoomLevel}
-        style={{ width: '100%', height: '100%' }}
-        fitView={false}
         nodesDraggable={false}
-        zoomOnScroll={!fixedZoom}
+        nodesConnectable={false}
+        elementsSelectable={false}
         panOnScroll={true}
-        zoomOnPinch={!fixedZoom}
-        zoomOnDoubleClick={!fixedZoom}
+        panOnDrag={true}
+        zoomOnDoubleClick={false}
+        onlyRenderVisibleElements={true} // Mejorar rendimiento
+        fitView
       >
-        <Background variant="dots" gap={16} color="#aaa" />
-        <Controls showInteractive={false} />
-        
-        {/* Indicador de progreso de la presentación */}
-        <div className="fixed bottom-4 left-4 z-50 bg-black bg-opacity-30 px-3 py-1 rounded-full">
-          <div className="flex items-center gap-1">
-            {navigationSequence.map((_, index) => (
-              <div 
-                key={index} 
-                className={`w-2 h-2 rounded-full ${index === currentNodeIndex ? 'bg-indigo-400' : 'bg-gray-400 opacity-50'}`}
-              />
-            ))}
-          </div>
-        </div>
+        <Controls position="top-right" showZoom={false} showInteractive={false} />
+        <Background color="#aaa" variant="dots" gap={20} size={1} />
       </ReactFlow>
       
       <NavigationControls
@@ -589,32 +578,22 @@ function Flow() {
         totalNodes={navigationSequence.length}
       />
       
-      {/* Control de zoom (oculto pero funcional) */}
       <ZoomControl
         zoomLevel={zoomLevel}
         onChange={handleZoomChange}
-        disabled={fixedZoom}
+        disabled={false}
       />
     </div>
   );
 }
 
 function App() {
-  // Añadir animaciones globales al DOM
-  useEffect(() => {
-    const styleEl = document.createElement('style');
-    styleEl.textContent = fadeInAnimation;
-    document.head.appendChild(styleEl);
-    
-    return () => {
-      document.head.removeChild(styleEl);
-    };
-  }, []);
-
   return (
-    <ReactFlowProvider>
-      <Flow />
-    </ReactFlowProvider>
+    <div className="fixed inset-0 z-0">
+      <ReactFlowProvider>
+        <Flow />
+      </ReactFlowProvider>
+    </div>
   );
 }
 
