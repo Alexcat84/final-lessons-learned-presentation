@@ -112,7 +112,7 @@ function NavigationControls({ onNext, onPrevious, currentNodeIndex, totalNodes }
           onClick={onPrevious}
           className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 border border-blue-400/20"
         >
-          ← Anterior
+          ← Previous
         </button>
       )}
       {currentNodeIndex < totalNodes - 1 && (
@@ -120,7 +120,7 @@ function NavigationControls({ onNext, onPrevious, currentNodeIndex, totalNodes }
           onClick={onNext}
           className="bg-gradient-to-r from-indigo-600 to-blue-700 hover:from-indigo-700 hover:to-blue-800 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 border border-blue-400/20"
         >
-          Siguiente →
+          Next →
         </button>
       )}
     </div>
