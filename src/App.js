@@ -106,7 +106,6 @@ const activePresentationKey = 'crypto';
 const navigationSequences = {
   crypto: [
     'cryptoTitle',
-    'cryptoObjectives',
     'cryptoTransformation',
     'cryptoBusiness',
     'cryptoRiskIdentification',
@@ -123,7 +122,6 @@ const navigationSequence = navigationSequences[activePresentationKey];
 const fixedPositions = {  
   // Crypto Currency positions
   'cryptoTitle': { x: 0, y: 0 },
-  'cryptoObjectives': { x: 1000, y: 350 }, // Nueva posición para los objetivos
   'cryptoTransformation': { x: -1000, y: 700 },
   'cryptoBusiness': { x: 1000, y: 1400 },
   'cryptoRiskIdentification': { x: -1000, y: 2100 },
@@ -155,23 +153,6 @@ const cryptoNodes = [
       date: "April 8, 2025",
       speakerNotes: "Welcome to our analysis of cryptocurrency impacts on traditional financial markets and world businesses. In this presentation, we'll explore how cryptocurrencies are transforming financial infrastructure and presenting both challenges and opportunities across various sectors."
     }
-  },
-  {
-    id: 'cryptoObjectives',
-    type: 'cryptoObjectivesNode',
-    position: fixedPositions['cryptoObjectives'],
-    data: {
-      title: "Learning Objectives",
-      objectives: [
-        "Analyze cryptocurrency's impact on financial infrastructure and risk assessment frameworks",
-        "Evaluate cross-sector business transformations in response to crypto adoption",
-        "Apply risk identification frameworks to technological market disruptions",
-        "Develop strategic response plans for transformation-driven risks",
-        "Assess adaptation strategy effectiveness in traditional financial institutions"
-      ],
-      speakerNotes: "These learning objectives will guide our discussion today. We'll analyze how cryptocurrencies have fundamentally changed financial infrastructure, evaluate business transformations across sectors, apply risk identification frameworks, develop strategic response plans, and assess various adaptation strategies."
-    },
-    hidden: true
   },
   {
     id: 'cryptoTransformation',
@@ -340,13 +321,12 @@ const initialNodes = cryptoNodes;
 
 // Create edges for Crypto Currency presentation
 const cryptoEdges = [
-  { id: 'e1-2', source: 'cryptoTitle', target: 'cryptoObjectives', animated: true },
-  { id: 'e2-3', source: 'cryptoObjectives', target: 'cryptoTransformation', animated: true },
-  { id: 'e3-4', source: 'cryptoTransformation', target: 'cryptoBusiness', animated: true },
-  { id: 'e4-5', source: 'cryptoBusiness', target: 'cryptoRiskIdentification', animated: true },
-  { id: 'e5-6', source: 'cryptoRiskIdentification', target: 'cryptoStrategicResponse', animated: true },
-  { id: 'e6-7', source: 'cryptoStrategicResponse', target: 'cryptoAdaptation', animated: true },
-  { id: 'e7-8', source: 'cryptoAdaptation', target: 'cryptoThanks', animated: true }
+  { id: 'e1-2', source: 'cryptoTitle', target: 'cryptoTransformation', animated: true },
+  { id: 'e2-3', source: 'cryptoTransformation', target: 'cryptoBusiness', animated: true },
+  { id: 'e3-4', source: 'cryptoBusiness', target: 'cryptoRiskIdentification', animated: true },
+  { id: 'e4-5', source: 'cryptoRiskIdentification', target: 'cryptoStrategicResponse', animated: true },
+  { id: 'e5-6', source: 'cryptoStrategicResponse', target: 'cryptoAdaptation', animated: true },
+  { id: 'e6-7', source: 'cryptoAdaptation', target: 'cryptoThanks', animated: true }
 ];
 
 // Set initial edges
