@@ -7,7 +7,7 @@ const AccomplishmentsNode = ({ data }) => {
     'Successfully implemented bilingual (English/French) marketing videos',
     'Developed and executed a 3-week social media campaign',
     'Arranged donation collection points at multiple locations:',
-    ['Connor & Kennedy\'s No Frills ($690.85)', 'Sonny Bar & Grill ($174.00)', 'Online platform ($465.00)'],
+    ['Connor & Kennedy\'s No Frills', 'Sonny Bar & Grill', 'Online platform'],
     'Successfully rescheduled event during ice storm emergency (Risk Assessment)'
   ];
 

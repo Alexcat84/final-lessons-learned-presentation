@@ -231,7 +231,7 @@ const lessonsNodes = [
         'Successfully implemented bilingual (English/French) marketing videos',
         'Developed and executed a 3-week social media campaign',
         'Arranged donation collection points at multiple locations:',
-        ['Connor & Kennedy\'s No Frills ($690.85)', 'Sonny Bar & Grill ($174.00)', 'Online platform ($465.00)'],
+        ['Connor & Kennedy\'s No Frills', 'Sonny Bar & Grill', 'Online platform'],
         'Successfully rescheduled event during ice storm emergency (Risk Assessment)'
       ],
       speakerNotes: "We're proud of several key accomplishments in this project. We exceeded our fundraising goal by over 20%, created bilingual marketing videos to reach a broader audience, executed an effective social media campaign, established multiple donation collection points, and successfully navigated through an unexpected weather emergency by implementing our risk response plan."
@@ -254,7 +254,7 @@ const lessonsNodes = [
     position: fixedPositions['donationsEvolution'],
     data: {
       title: "Donations Evolution",
-      speakerNotes: "This slide illustrates how donations evolved throughout our campaign. Connor & Kennedy's No Frills was our largest collection point, contributing nearly 43% of total funds. Our online platform generated about 29%, while the event venue provided almost 11%. This diversified approach was key to exceeding our goal and reaching $1,213.20."
+      speakerNotes: "This slide illustrates how donations evolved throughout our campaign. Connor & Kennedy's No Frills was our largest collection point, followed by our online platform and the event venue. This diversified approach was key to exceeding our goal."
     },
     hidden: true
   },
